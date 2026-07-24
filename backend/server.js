@@ -19,9 +19,9 @@ app.use(passport.initialize());
 
 setupSwagger(app);
 
-app.use("/", taskRoutes);
+app.use("/api", taskRoutes);
 
-app.get("/", async (req, res) => {
+app.get("/api", async (req, res) => {
   try {
     await pool.query("SELECT NOW()");
     res.status(200).send("Database connection and server startup successful!");
@@ -31,8 +31,11 @@ app.get("/", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+export default app;
